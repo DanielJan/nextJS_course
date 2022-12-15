@@ -17,7 +17,7 @@ import { useRouter } from 'next/router'
 }
 
 
-export const getServerSideProps = async (context: any) => {
+export const getStaticProps = async (context: any) => {
   console.log('context.params', context.params)
   const res = await fetch(
     `https://jsonplaceholder.typicode.com/posts/${context.params.id}`
@@ -31,4 +31,21 @@ export const getServerSideProps = async (context: any) => {
       }
     }
 }
+
+export const getStaticPaths = async () => {
+  const res = await fetch(
+    `https://jsonplaceholder.typicode.com/posts`
+    )
+    const articles = await res.json()
+
+    const ids = articles.map(e => e.id)
+    const paths = ids.map(id => ({params: {id: id.toString()}}))
+    console.log('paths', paths)
+    return {
+      paths,
+      fallback: false
+    }
+}
+
+
 export default Article
